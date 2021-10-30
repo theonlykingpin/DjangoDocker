@@ -8,10 +8,17 @@ services:
     restart: 'always'
     expose:
       - '8000'
+    environment:
+      - "MARIADB_DATABASE=django-app"
+      - "MARIADB_USER=django-user"
+      - "MARIADB_HOST=mariadb"
     volumes:
       - type: 'bind'
         source: './volumes/app'
         target: '/app'
+    depends_on:
+      - "mariadb"
+      - "nginx"
 
   nginx:
     build: './nginx'
@@ -27,3 +34,18 @@ services:
       - type: 'bind'
         source: './volumes/static'
         target: '/app/static'
+
+  mariadb:
+    image: 'mariadb:latest'
+    container_name: 'mariadb'
+    restart: 'always'
+    expose:
+      - '3306'
+    environment:
+      - "MARIADB_DATABASE=django-app"
+      - "MARIADB_USER=django-user"
+      - "MARIADB_ROOT_PASSWORD=1234"
+    volumes:
+      - type: 'bind'
+        source: './volumes/dbdata'
+        target: '/var/lib/mysql'

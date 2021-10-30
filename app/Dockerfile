@@ -7,8 +7,13 @@ ENV DJANGO_SUPERUSER_PASSWORD admin
 RUN mkdir /app
 WORKDIR /app
 
+RUN apk update
+RUN apk add --no-cache gcc python3-dev musl-dev mariadb-dev
+
 RUN pip install --upgrade pip
-RUN pip install django gunicorn
+RUN pip install django gunicorn mysqlclient
+
+RUN apk del gcc python3-dev musl-dev
 
 CMD python3 manage.py makemigrations --noinput && \
     python3 manage.py migrate --noinput && \
