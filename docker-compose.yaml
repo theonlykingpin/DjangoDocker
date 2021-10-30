@@ -9,9 +9,10 @@ services:
     expose:
       - '8000'
     environment:
-      - "MARIADB_DATABASE=django-app"
-      - "MARIADB_USER=django-user"
-      - "MARIADB_HOST=mariadb"
+      - "MARIA_NAME=rezaa"
+      - "MARIA_USER=reza"
+      - "MARIA_PASSWORD=1234"
+      - "MARIA_HOST=mariadb"
     volumes:
       - type: 'bind'
         source: './volumes/app'
@@ -42,9 +43,10 @@ services:
     expose:
       - '3306'
     environment:
-      - "MARIADB_DATABASE=django-app"
-      - "MARIADB_USER=django-user"
-      - "MARIADB_ROOT_PASSWORD=1234"
+      - "MARIA_NAME=rezaa"
+      - "MARIA_USER=reza"
+      - "MARIA_PASSWORD=1234"
+      - "MARIA_ROOT_PASSWORD=1234"
     volumes:
       - type: 'bind'
         source: './volumes/dbdata'
