@@ -85,10 +85,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get("MARIA_NAME"),
-        'USER': os.environ.get("MARIA_USER"),
-        'PASSWORD': os.environ.get("MARIA_PASSWORD"),
-        'HOST': os.environ.get("MARIA_HOST"),
+        'NAME': os.environ.get("MARIADB_DATABASE"),
+        'USER': os.environ.get("MARIADB_USER"),
+        'PASSWORD': os.environ.get("MARIADB_PASSWORD"),
+        'HOST': os.environ.get("MARIADB_HOST"),
     }
 }
 

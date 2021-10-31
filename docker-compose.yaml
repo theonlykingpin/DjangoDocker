@@ -9,10 +9,10 @@ services:
     expose:
       - '8000'
     environment:
-      - "MARIA_NAME=rezaa"
-      - "MARIA_USER=reza"
-      - "MARIA_PASSWORD=1234"
-      - "MARIA_HOST=mariadb"
+      - "MARIADB_DATABASE=django_app"
+      - "MARIADB_USER=django_user"
+      - "MARIADB_PASSWORD=1234"
+      - "MARIADB_HOST=mariadb"
     volumes:
       - type: 'bind'
         source: './volumes/app'
@@ -20,6 +20,22 @@ services:
     depends_on:
       - "mariadb"
       - "nginx"
+
+  mariadb:
+    image: 'mariadb:latest'
+    container_name: 'mariadb'
+    restart: 'always'
+    expose:
+      - '3306'
+    environment:
+      - "MARIADB_DATABASE=django_app"
+      - "MARIADB_USER=django_user"
+      - "MARIADB_PASSWORD=1234"
+      - "MARIADB_ROOT_PASSWORD=1234"
+    volumes:
+      - type: 'bind'
+        source: './volumes/dbdata'
+        target: '/var/lib/mysql'
 
   nginx:
     build: './nginx'
@@ -35,19 +51,3 @@ services:
       - type: 'bind'
         source: './volumes/static'
         target: '/app/static'
-
-  mariadb:
-    image: 'mariadb:latest'
-    container_name: 'mariadb'
-    restart: 'always'
-    expose:
-      - '3306'
-    environment:
-      - "MARIA_NAME=rezaa"
-      - "MARIA_USER=reza"
-      - "MARIA_PASSWORD=1234"
-      - "MARIA_ROOT_PASSWORD=1234"
-    volumes:
-      - type: 'bind'
-        source: './volumes/dbdata'
-        target: '/var/lib/mysql'
