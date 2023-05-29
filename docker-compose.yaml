@@ -1,53 +1,59 @@
-version: "3.7"
+version: "3.8"
 
 services:
 
   app:
-    build: './app'
-    container_name: 'app'
-    restart: 'always'
+    build: ./app
+    container_name: app
+    restart: always
     expose:
-      - '8000'
-    environment:
-      - "MARIADB_DATABASE=django_app"
-      - "MARIADB_USER=django_user"
-      - "MARIADB_PASSWORD=1234"
-      - "MARIADB_HOST=mariadb"
+      - 8000
+    env_file:
+      - .env
     volumes:
-      - type: 'bind'
-        source: './volumes/app'
-        target: '/app'
+      - app-volume:/app
     depends_on:
-      - "mariadb"
-      - "nginx"
+      - mariadb
+      - nginx
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   mariadb:
-    image: 'mariadb:latest'
-    container_name: 'mariadb'
-    restart: 'always'
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
     expose:
-      - '3306'
-    environment:
-      - "MARIADB_DATABASE=django_app"
-      - "MARIADB_USER=django_user"
-      - "MARIADB_PASSWORD=1234"
-      - "MARIADB_ROOT_PASSWORD=1234"
+      - 3306
+    env_file:
+      - .env
     volumes:
-      - type: 'bind'
-        source: './volumes/dbdata'
-        target: '/var/lib/mysql'
+      - dbdata-volume:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${MARIADB_USER}", "-p${MARIADB_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   nginx:
-    build: './nginx'
-    container_name: 'nginx'
-    restart: 'always'
+    build: ./nginx
+    container_name: nginx
+    restart: always
     ports:
-      - "80:80"
+      - 80:80
     volumes:
-      - type: 'bind'
-        source: './volumes/media'
-        target: '/app/media'
+      - media-volume:/app/media
+      - static-volume:/app/static
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-      - type: 'bind'
-        source: './volumes/static'
-        target: '/app/static'
+volumes:
+  app-volume:
+  dbdata-volume:
+  media-volume:
+  static-volume:
